@@ -92,6 +92,7 @@ wsServer.on('connection', (connection) => {
 
       const payloadPlayer2 = {
         method: 'join-sucess',
+        gameCode: messageBody.gameCode
       };
 
       connection.send(JSON.stringify(payloadPlayer2));
