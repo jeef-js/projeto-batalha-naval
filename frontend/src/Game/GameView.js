@@ -14,7 +14,7 @@ export const GameView = ({
   rotateShip,
   placeShip,
   placedShips,
-  startTurn,
+  startGame,
   computerShips,
   gameState,
   changeTurn,
@@ -49,7 +49,7 @@ export const GameView = ({
           availableShips={availableShips}
           selectShip={selectShip}
           currentlyPlacing={currentlyPlacing}
-          startTurn={startTurn}
+          startGame={startGame}
           startAgain={startAgain}
           isHost={isHost}
           markAsReady={markAsReady}

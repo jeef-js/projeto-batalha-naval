@@ -16,11 +16,15 @@ export const App = () => {
 
     if (messageBody.method === 'connected') {
       clientId = messageBody.clientId;
+
+      return;
     }
 
     if (messageBody.method === 'create-sucess') {
       setGameCode(messageBody.gameCode);
       setAppState('play');
+
+      return;
     }
 
     if (messageBody.method === 'join-sucess') {
@@ -28,15 +32,30 @@ export const App = () => {
       setOpponentTitle('Oponente (Host)');
       setIsHost(false);
       setAppState('play');
+
+      return;
     }
 
     if (messageBody.method === 'opponent-joined') {
       setOpponentTitle('Oponente (Aguardando Confirmação)');
+
+      return;
     }
 
     if (messageBody.method === 'opponent-ready') {
       setOpponentTitle('Oponente (Pronto)');
       setIsOpponentReady(true);
+
+      return;
+    }
+
+    if (messageBody.method === 'game-started') {
+      if (isHost) {
+        setOpponentTitle('Oponente');
+        setGameState('player-turn');
+      } else {
+        setGameState('opponent-turn');
+      }
     }
   };
 
@@ -44,6 +63,7 @@ export const App = () => {
   const [opponentTitle, setOpponentTitle] = useState('Aguardando Oponente');
   const [isHost, setIsHost] = useState(true);
   const [isOpponentReady, setIsOpponentReady] = useState(false);
+  const [gameState, setGameState] = useState('placement');
 
   const [appState, setAppState] = useState('welcome');
 
@@ -69,9 +89,21 @@ export const App = () => {
   };
 
   const markAsReady = (board) => {
-    console.log(board);
     const payload = {
       method: 'mark-as-ready',
+      clientId,
+      gameCode,
+      board,
+    };
+
+    console.log(payload);
+
+    ws.send(JSON.stringify(payload));
+  };
+
+  const startGame = (board) => {
+    const payload = {
+      method: 'start-game',
       clientId,
       gameCode,
       board,
@@ -92,6 +124,8 @@ export const App = () => {
           isHost={isHost}
           markAsReady={markAsReady}
           isOpponentReady={isOpponentReady}
+          startGame={startGame}
+          gameState={gameState}
         />
       ) : (
         <WelcomeScreen createGame={createGame} joinGame={joinGame} />

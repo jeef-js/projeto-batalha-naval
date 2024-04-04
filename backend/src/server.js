@@ -128,6 +128,24 @@ wsServer.on('connection', (connection) => {
     }
 
     if (messageBody.method == 'start-game') {
+      if (
+        games[messageBody.gameCode].players[0].clientId == messageBody.clientId
+      ) {
+        games[messageBody.gameCode].players[0].status = 'ready';
+        games[messageBody.gameCode].players[0].board = messageBody.board;
+
+        const payload = {
+          method: 'game-started',
+        };
+
+        const player1Id = games[messageBody.gameCode].players[0].clientId;
+        const player2Id = games[messageBody.gameCode].players[1].clientId;
+
+        clients[player1Id].connection.send(JSON.stringify(payload));
+        clients[player2Id].connection.send(JSON.stringify(payload));
+
+        return;
+      }
     }
 
     if (messageBody.method == 'turn-action') {

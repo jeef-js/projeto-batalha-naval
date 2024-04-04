@@ -5,7 +5,7 @@ export const PlayerFleet = ({
   availableShips,
   selectShip,
   currentlyPlacing,
-  startTurn,
+  startGame,
   startAgain,
   isHost,
   markAsReady,
@@ -31,7 +31,7 @@ export const PlayerFleet = ({
     <div id="play-ready">
       <button
         id="play-button"
-        onClick={startTurn}
+        onClick={() => startGame(board)}
         disabled={availableShips.length > 0 || !isOpponentReady}
       >
         Iniciar Jogo

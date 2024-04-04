@@ -78,10 +78,10 @@ export const Game = ({
   isHost,
   markAsReady,
   isOpponentReady,
+  startGame,
+  gameState,
 }) => {
-  const [gameState, setGameState] = useState('placement');
   const [winner, setWinner] = useState(null);
-
   const [currentlyPlacing, setCurrentlyPlacing] = useState(null);
   const [placedShips, setPlacedShips] = useState([]);
   const [availableShips, setAvailableShips] = useState(AVAILABLE_SHIPS);
@@ -142,23 +142,17 @@ export const Game = ({
     }
   };
 
-  const startTurn = () => {
-    generateComputerShips();
-    setGameState('player-turn');
-  };
+  // const startGame = () => {
+  //   setGameState('player-turn');
+  // };
 
   const changeTurn = () => {
-    setGameState((oldGameState) =>
-      oldGameState === 'player-turn' ? 'computer-turn' : 'player-turn'
-    );
+    // setGameState((oldGameState) =>
+    //   oldGameState === 'player-turn' ? 'opponent-turn' : 'player-turn'
+    // );
   };
 
   // *** COMPUTER ***
-  const generateComputerShips = () => {
-    let placedComputerShips = placeAllComputerShips(AVAILABLE_SHIPS.slice());
-    setComputerShips(placedComputerShips);
-  };
-
   const computerFire = (index, layout) => {
     let computerHits;
 
@@ -262,7 +256,7 @@ export const Game = ({
     ).length;
 
     if (successfulComputerHits === 17 || successfulPlayerHits === 17) {
-      setGameState('game-over');
+      // setGameState('game-over');
 
       if (successfulComputerHits === 17) {
         setWinner('computer');
@@ -280,7 +274,7 @@ export const Game = ({
   };
 
   const startAgain = () => {
-    setGameState('placement');
+    // setGameState('placement');
     setWinner(null);
     setCurrentlyPlacing(null);
     setPlacedShips([]);
@@ -356,7 +350,7 @@ export const Game = ({
         rotateShip={rotateShip}
         placeShip={placeShip}
         placedShips={placedShips}
-        startTurn={startTurn}
+        startGame={startGame}
         computerShips={computerShips}
         gameState={gameState}
         changeTurn={changeTurn}
