@@ -28,9 +28,12 @@ export const GameView = ({
   startAgain,
   setComputerShips,
   playSound,
-  opponentTitle
+  opponentTitle,
+  isHost,
+  markAsReady,
+  isOpponentReady,
+  board,
 }) => {
-  console.log(gameCode)
   return (
     <section id="game-screen">
       {gameState !== 'placement' ? (
@@ -48,6 +51,10 @@ export const GameView = ({
           currentlyPlacing={currentlyPlacing}
           startTurn={startTurn}
           startAgain={startAgain}
+          isHost={isHost}
+          markAsReady={markAsReady}
+          isOpponentReady={isOpponentReady}
+          board={board}
         />
       )}
 

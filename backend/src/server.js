@@ -92,7 +92,7 @@ wsServer.on('connection', (connection) => {
 
       const payloadPlayer2 = {
         method: 'join-sucess',
-        gameCode: messageBody.gameCode
+        gameCode: messageBody.gameCode,
       };
 
       connection.send(JSON.stringify(payloadPlayer2));
@@ -113,6 +113,7 @@ wsServer.on('connection', (connection) => {
         games[messageBody.gameCode].players[1].clientId == messageBody.clientId
       ) {
         games[messageBody.gameCode].players[1].status = 'ready';
+        games[messageBody.gameCode].players[1].board = messageBody.board;
 
         const payload = {
           method: 'opponent-ready',

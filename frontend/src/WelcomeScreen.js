@@ -1,11 +1,13 @@
 import React from 'react';
 
-export const WelcomeScreen = ({ startPlay, joinGame }) => {
+export const WelcomeScreen = ({ createGame, joinGame }) => {
   const [gamecode, setGameCode] = React.useState('');
 
   const handleOnChange = React.useCallback((event) => {
-    const { target: { value } } = event;
-    
+    const {
+      target: { value },
+    } = event;
+
     setGameCode(value);
   }, []);
 
@@ -15,10 +17,16 @@ export const WelcomeScreen = ({ startPlay, joinGame }) => {
 
   return (
     <main>
-      <div className='start-menu'> 
-        <button onClick={startPlay}>Criar Partida</button>
-        <div className='join-room'>
-          <input type='text' placeholder='Código' gamecode="" value={gamecode} onChange={handleOnChange}></input>
+      <div className="start-menu">
+        <button onClick={createGame}>Criar Partida</button>
+        <div className="join-room">
+          <input
+            type="text"
+            placeholder="Código"
+            gamecode=""
+            value={gamecode}
+            onChange={handleOnChange}
+          ></input>
           <button onClick={handleOnClick}>Entrar</button>
         </div>
       </div>

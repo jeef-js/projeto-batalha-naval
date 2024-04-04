@@ -115,13 +115,13 @@ main {
   margin: 0;
 }
 
-.join-room input[type=text] {
+.join-room input[type='text'] {
   height: 50px;
   box-sizing: border-box;
   padding-left: 1rem;
 }
 
-.join-room input[type=text]::placeholder {
+.join-room input[type='text']::placeholder {
   font-size: 16px;
 }
 
@@ -194,6 +194,10 @@ button:hover {
 button:active {
   position: relative;
   top: 1px;
+}
+
+button:disabled {
+  opacity: 0.5;
 }
 
 /* FOOTER */

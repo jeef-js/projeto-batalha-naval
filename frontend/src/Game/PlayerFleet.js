@@ -7,6 +7,10 @@ export const PlayerFleet = ({
   currentlyPlacing,
   startTurn,
   startAgain,
+  isHost,
+  markAsReady,
+  isOpponentReady,
+  board,
 }) => {
   let shipsLeft = availableShips.map((ship) => ship.name);
 
@@ -15,27 +19,34 @@ export const PlayerFleet = ({
     <ReplicaBox
       selectShip={selectShip}
       key={shipName}
-      isCurrentlyPlacing={currentlyPlacing && currentlyPlacing.name === shipName}
+      isCurrentlyPlacing={
+        currentlyPlacing && currentlyPlacing.name === shipName
+      }
       shipName={shipName}
       availableShips={availableShips}
     />
   ));
 
-  let fleet = (
-    <div id="replica-fleet">
-      {shipReplicaBoxes}
-      <p className="player-tip">Clique com o botão direito enquanto estiver posicionando o navio para rotacionar.</p>
-      <p className="restart" onClick={startAgain}>
-        Limpar Tabuleiro
-      </p>
+  let playButton = (
+    <div id="play-ready">
+      <button
+        id="play-button"
+        onClick={startTurn}
+        disabled={availableShips.length > 0 || !isOpponentReady}
+      >
+        Iniciar Jogo
+      </button>
     </div>
   );
 
-  let playButton = (
-    <div id="play-ready">
-      <p className="player-tip">Embarcações posionadas.</p>
-      <button id="play-button" onClick={startTurn}>
-        Iniciar Jogo
+  let readyButton = (
+    <div id="play2-ready">
+      <button
+        id="play-button"
+        onClick={() => markAsReady(board)}
+        disabled={availableShips.length > 0}
+      >
+        Pronto
       </button>
     </div>
   );
@@ -45,12 +56,15 @@ export const PlayerFleet = ({
       <div className="tip-box-title">Suas Embarcações</div>
       <div id="replica-fleet">
         {shipReplicaBoxes}
-        <p className="player-tip">Clique com o botão direito enquanto estiver posicionando o navio para rotacionar.</p>
+        <p className="player-tip">
+          Clique com o botão direito enquanto estiver posicionando o navio para
+          rotacionar.
+        </p>
         <p className="restart" onClick={startAgain}>
           Limpar Tabuleiro
         </p>
       </div>
-      {availableShips.length > 0 ? null : playButton}
+      {isHost ? playButton : readyButton}
     </div>
   );
 };

@@ -10,43 +10,82 @@ import {
   getNeighbors,
   updateSunkShips,
   coordsToIndex,
+  entityIndices,
 } from './layoutHelpers';
 
 const AVAILABLE_SHIPS = [
   {
     name: 'Porta-aviões',
+    label: 'portaAvioes',
     length: 5,
     placed: null,
   },
   {
     name: 'Encouraçado',
+    label: 'encouracado',
     length: 4,
     placed: null,
   },
   {
     name: 'Cruzador',
+    label: 'cruzador',
     length: 3,
     placed: null,
   },
   {
     name: 'Submarino 1',
+    label: 'submarino1',
     length: 2,
     placed: null,
   },
   {
     name: 'Submarino 2',
+    label: 'submarino2',
     length: 2,
     placed: null,
   },
 ];
 
-export const Game = ({ gameCode, opponentTitle }) => {
+const BOARD = {
+  ships: {
+    portaAvioes: {
+      length: 5,
+      hittedCells: 0,
+    },
+    encouracado: {
+      length: 4,
+      hittedCells: 0,
+    },
+    cruzador: {
+      length: 3,
+      hittedCells: 0,
+    },
+    submarino1: {
+      length: 2,
+      hittedCells: 0,
+    },
+    submarino2: {
+      length: 2,
+      hittedCells: 0,
+    },
+  },
+  cells: {},
+};
+
+export const Game = ({
+  gameCode,
+  opponentTitle,
+  isHost,
+  markAsReady,
+  isOpponentReady,
+}) => {
   const [gameState, setGameState] = useState('placement');
   const [winner, setWinner] = useState(null);
 
   const [currentlyPlacing, setCurrentlyPlacing] = useState(null);
   const [placedShips, setPlacedShips] = useState([]);
   const [availableShips, setAvailableShips] = useState(AVAILABLE_SHIPS);
+  const [board, setBoard] = useState(BOARD);
   const [computerShips, setComputerShips] = useState([]);
   const [hitsByPlayer, setHitsByPlayer] = useState([]);
   const [hitsByComputer, setHitsByComputer] = useState([]);
@@ -72,6 +111,18 @@ export const Game = ({ gameCode, opponentTitle }) => {
       },
     ]);
 
+    const indices = entityIndices(currentlyPlacing);
+
+    for (const index of indices) {
+      const { x, y } = indexToCoords(index);
+
+      if (board.cells[x] === undefined) board.cells[x] = {};
+
+      board.cells[x][y] = currentlyPlacing.label;
+    }
+
+    setBoard(board);
+
     setAvailableShips((previousShips) =>
       previousShips.filter((ship) => ship.name !== currentlyPlacing.name)
     );
@@ -84,7 +135,9 @@ export const Game = ({ gameCode, opponentTitle }) => {
       setCurrentlyPlacing({
         ...currentlyPlacing,
         orientation:
-          currentlyPlacing.orientation === 'vertical' ? 'horizontal' : 'vertical',
+          currentlyPlacing.orientation === 'vertical'
+            ? 'horizontal'
+            : 'vertical',
       });
     }
   };
@@ -166,7 +219,9 @@ export const Game = ({ gameCode, opponentTitle }) => {
       layout
     );
 
-    let successfulComputerHits = hitsByComputer.filter((hit) => hit.type === 'hit');
+    let successfulComputerHits = hitsByComputer.filter(
+      (hit) => hit.type === 'hit'
+    );
 
     let nonSunkComputerHits = successfulComputerHits.filter((hit) => {
       const hitIndex = coordsToIndex(hit.position);
@@ -199,9 +254,12 @@ export const Game = ({ gameCode, opponentTitle }) => {
 
   // Check if either player or computer ended the game
   const checkIfGameOver = () => {
-    let successfulPlayerHits = hitsByPlayer.filter((hit) => hit.type === 'hit').length;
-    let successfulComputerHits = hitsByComputer.filter((hit) => hit.type === 'hit')
-      .length;
+    let successfulPlayerHits = hitsByPlayer.filter(
+      (hit) => hit.type === 'hit'
+    ).length;
+    let successfulComputerHits = hitsByComputer.filter(
+      (hit) => hit.type === 'hit'
+    ).length;
 
     if (successfulComputerHits === 17 || successfulPlayerHits === 17) {
       setGameState('game-over');
@@ -263,7 +321,6 @@ export const Game = ({ gameCode, opponentTitle }) => {
     }
   };
 
-  console.log(gameCode)
   return (
     <React.Fragment>
       <audio
@@ -278,8 +335,18 @@ export const Game = ({ gameCode, opponentTitle }) => {
         className="clip"
         preload="auto"
       />
-      <audio ref={lossSoundRef} src="/sounds/lose.wav" className="clip" preload="auto" />
-      <audio ref={winSoundRef} src="/sounds/win.wav" className="clip" preload="auto" />
+      <audio
+        ref={lossSoundRef}
+        src="/sounds/lose.wav"
+        className="clip"
+        preload="auto"
+      />
+      <audio
+        ref={winSoundRef}
+        src="/sounds/win.wav"
+        className="clip"
+        preload="auto"
+      />
       <GameView
         gameCode={gameCode}
         availableShips={availableShips}
@@ -304,6 +371,10 @@ export const Game = ({ gameCode, opponentTitle }) => {
         setComputerShips={setComputerShips}
         playSound={playSound}
         opponentTitle={opponentTitle}
+        isHost={isHost}
+        markAsReady={markAsReady}
+        isOpponentReady={isOpponentReady}
+        board={board}
       />
     </React.Fragment>
   );
